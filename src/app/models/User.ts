@@ -45,19 +45,17 @@ const UserSchema: Schema<User>= new Schema({
     },
     isForgotPasswordToken:{
         type:String,
-        unique: true,
-        required: [true, "Provide a code to reset your password"]
+        unique: true
     },
     isForgotPasswordTokenExpiry:{
         type:Date,
         unique: true,
-        required: [true, "Code is expiry"]
     }
 })
 
 const UserModel = (mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", UserSchema))
 
-
+export default UserModel
 
 
 
