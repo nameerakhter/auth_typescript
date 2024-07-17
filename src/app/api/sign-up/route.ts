@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "../../lib/dbConnect";
 import UserModel from "../../models/User";
 import bcryptjs from "bcryptjs";
+import { sendVerificationEmail } from "../../helpers/sendVerificationEmail/route";
 
 export async function POST(request: NextRequest) {
   await dbConnect();
@@ -70,8 +71,7 @@ export async function POST(request: NextRequest) {
 
     }
     //  Send Verification email
-    
-
+    const emailResponse = await sendVerificationEmail(email, username, verifyCode);
   } catch (error) {
     return NextResponse.json(
       {
