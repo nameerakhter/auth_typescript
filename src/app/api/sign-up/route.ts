@@ -52,6 +52,12 @@ export async function POST(request: NextRequest) {
           },
           { status: 400 }
         );
+      }else{
+        const hashedPassword = await bcryptjs.hash(password, 10);
+        isUserWithVerifiedEmailExists.password = hashedPassword
+        isUserWithVerifiedEmailExists.isVerifiedToken = verifyCode
+        isUserWithVerifiedEmailExists.isVerifiedTokenExpiry = new Date(Date.now()+3600000)
+        await isUserWithVerifiedEmailExists.save()
       }
     } else {
       const hashedPassword = await bcryptjs.hash(password, 10);
@@ -72,6 +78,15 @@ export async function POST(request: NextRequest) {
     }
     //  Send Verification email
     const emailResponse = await sendVerificationEmail(email, username, verifyCode);
+    if(!emailResponse.success){
+      return NextResponse.json(
+        {
+          success: true,
+          message: "User registered successfully!",
+        },
+        { status: 200 }
+      );
+    }
   } catch (error) {
     return NextResponse.json(
       {
