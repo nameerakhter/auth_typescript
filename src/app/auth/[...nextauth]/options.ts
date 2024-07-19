@@ -47,11 +47,7 @@ export const authOptions: NextAuthOptions ={
             clientId: process.env.GOOGLE_ID!,
             clientSecret: process.env.GOOGLE_SECRET!,
             authorization: {
-              params: {
-                prompt: "consent",
-                access_type: "offline",
-                response_type: "code"
-              }
+                params: { scope: "profile email" }
             }
           })
     ],
@@ -59,8 +55,10 @@ export const authOptions: NextAuthOptions ={
         signIn: '/sign-in'
     },
     callbacks:{
-        async session({ session, token }) {
-            return session
+        async session({ session, token }): Promise<any> {
+            session.user._id = token._id
+            session.user.isVerified = token.isVerified
+            session.user.username = token.username
           },
         async jwt({ token, user,}): Promise<any> {
             token._id = user._id?.toString()
